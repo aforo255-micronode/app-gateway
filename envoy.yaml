@@ -1,0 +1,165 @@
+admin:
+  access_log_path: /tmp/admin_access.log
+  address:
+    socket_address:
+      protocol: TCP
+      address: 0.0.0.0
+      port_value: 9901
+ 
+static_resources:
+  listeners:
+  - name: listener_0
+    address:
+      socket_address:
+        protocol: TCP
+        address: 0.0.0.0
+        port_value: 10000
+    filter_chains:
+    - filters:
+      - name: envoy.filters.network.http_connection_manager
+        typed_config:
+          "@type": type.googleapis.com/envoy.extensions.filters.network.http_connection_manager.v3.HttpConnectionManager
+          stat_prefix: ingress_http
+          route_config:
+            name: local_route
+            virtual_hosts:
+            - name: local_service
+              domains: ["*"]
+              cors:
+                allow_origin_string_match:
+                  - safe_regex:
+                      google_re2: {}
+                      regex: \*
+                allow_methods: "*"
+                allow_headers: "*"              
+              routes:
+              - match:
+                  prefix: "/security"
+                route:
+                  prefix_rewrite: "/api/auth/getToken"
+                  cluster: security_cluster
+              - match:
+                  prefix: "/account"
+                route:
+                  prefix_rewrite: "/api/account/getAccounts"
+                  cluster: account_cluster
+              - match:
+                  prefix: "/deposit"
+                route:
+                  prefix_rewrite: "/api/transaction/deposit"
+                  cluster: deposit_cluster
+              - match:
+                  prefix: "/withdrawal"
+                route:
+                  prefix_rewrite: "/api/transaction/withdrawal"
+                  cluster: withdrawal_cluster
+              - match:
+                  prefix: "/movement"
+                route:
+                  prefix_rewrite: "/api/movement/getMovementByAccountId"
+                  cluster: movement_cluster
+          http_filters:
+          - name: envoy.cors
+            typed_config: {}
+          - name: envoy.filters.http.jwt_authn 
+            typed_config:
+              "@type": type.googleapis.com/envoy.extensions.filters.http.jwt_authn.v3.JwtAuthentication 
+              providers:
+                jwt_provider:
+                  local_jwks:
+                    inline_string: '{"keys":[{"typ": "JWT", "kty":"oct","alg":"HS256","kid":"df","k":"S2V5U2VjcmV0IzEyM0Fmb3JvMjU1IzI1NSNOb2RlSlNNaWNybw=="}]}' #https://www.base64encode.org/  ->  ENCODE ->   KeySecret#123Aforo255#255#NodeJSMicro
+              rules:
+                - match:
+                    prefix: /account
+                  requires:
+                    provider_name: jwt_provider
+                - match:
+                    prefix: /deposit
+                  requires:
+                    provider_name: jwt_provider
+                - match:
+                    prefix: /withdrawal
+                  requires:
+                    provider_name: jwt_provider
+                - match:
+                    prefix: /movement
+                  requires:
+                    provider_name: jwt_provider
+          - name: envoy.filters.http.router
+  clusters:
+  - name: security_cluster
+    connect_timeout: 60s
+    type: LOGICAL_DNS
+    # Comment out the following line to test on v6 networks
+    dns_lookup_family: V4_ONLY
+    lb_policy: ROUND_ROBIN
+    load_assignment:
+      cluster_name: security_cluster
+      endpoints:
+      - lb_endpoints:
+        - endpoint:
+            address:
+              socket_address:
+                address: host.docker.internal
+                port_value: 5001
+  - name: account_cluster
+    connect_timeout: 60s
+    type: LOGICAL_DNS
+    # Comment out the following line to test on v6 networks
+    dns_lookup_family: V4_ONLY
+    lb_policy: ROUND_ROBIN
+    load_assignment:
+      cluster_name: account_cluster
+      endpoints:
+      - lb_endpoints:
+        - endpoint:
+            address:
+              socket_address:
+                address: host.docker.internal
+                port_value: 5002
+  - name: deposit_cluster
+    connect_timeout: 60s
+    type: LOGICAL_DNS
+    # Comment out the following line to test on v6 networks
+    dns_lookup_family: V4_ONLY
+    lb_policy: ROUND_ROBIN
+    load_assignment:
+      cluster_name: deposit_cluster
+      endpoints:
+      - lb_endpoints:
+        - endpoint:
+            address:
+              socket_address:
+                address: host.docker.internal
+                port_value: 5003
+  - name: withdrawal_cluster
+    connect_timeout: 60s
+    type: LOGICAL_DNS
+    # Comment out the following line to test on v6 networks
+    dns_lookup_family: V4_ONLY
+    lb_policy: ROUND_ROBIN
+    load_assignment:
+      cluster_name: withdrawal_cluster
+      endpoints:
+      - lb_endpoints:
+        - endpoint:
+            address:
+              socket_address:
+                address: host.docker.internal
+                port_value: 5004
+  - name: movement_cluster
+    connect_timeout: 60s
+    type: LOGICAL_DNS
+    # Comment out the following line to test on v6 networks
+    dns_lookup_family: V4_ONLY
+    lb_policy: ROUND_ROBIN
+    load_assignment:
+      cluster_name: movement_cluster
+      endpoints:
+      - lb_endpoints:
+        - endpoint:
+            address:
+              socket_address:
+                address: host.docker.internal
+                port_value: 5005
+ 
