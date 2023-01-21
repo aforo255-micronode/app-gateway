@@ -19,6 +19,6 @@ spec:
         image: jeanflores2c93/aforo255-nodejs-gateway:1
         ports:
         - name: http
-          containerPort: 80
+          containerPort: 10000
         - name: envoy-admin
           containerPort: 9901
