@@ -100,7 +100,7 @@ static_resources:
         - endpoint:
             address:
               socket_address:
-                address: app-service-security
+                address: host.docker.internal
                 port_value: 5001
   - name: account_cluster
     connect_timeout: 60s
@@ -115,7 +115,7 @@ static_resources:
         - endpoint:
             address:
               socket_address:
-                address: app-service-account
+                address: host.docker.internal
                 port_value: 5002
   - name: deposit_cluster
     connect_timeout: 60s
@@ -130,7 +130,7 @@ static_resources:
         - endpoint:
             address:
               socket_address:
-                address: app-service-deposit
+                address: host.docker.internal
                 port_value: 5003
   - name: withdrawal_cluster
     connect_timeout: 60s
@@ -145,7 +145,7 @@ static_resources:
         - endpoint:
             address:
               socket_address:
-                address: app-service-withdrawal
+                address: host.docker.internal
                 port_value: 5004
   - name: movement_cluster
     connect_timeout: 60s
@@ -160,6 +160,6 @@ static_resources:
         - endpoint:
             address:
               socket_address:
-                address: app-service-movement
+                address: host.docker.internal
                 port_value: 5005
  
