@@ -1,0 +1,38 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: app-deployment-gateway
+  labels:
+    app: service-gateway
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: service-gateway
+  template:
+    metadata:
+      labels:
+        app: service-gateway
+    spec:
+      containers:
+      - name: app-gateway
+        image: jeanflores2c93/aforo255-nodejs-gateway:1
+        ports:
+        - name: http
+          containerPort: 80
+        - name: envoy-admin
+          containerPort: 9901
+---
+kind: Service
+apiVersion: v1
+metadata:
+  name: app-service-gateway
+spec:
+  type: LoadBalancer
+  selector:
+    app: service-gateway
+  ports:
+  - protocol: TCP
+    port: 80
+    targetPort: http
+    name: http
