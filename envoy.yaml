@@ -101,7 +101,8 @@ static_resources:
             address:
               socket_address:
                 address: app-service-security
-                port_value: 5001
+                # port_value: 5001
+                port_value: 80
   - name: account_cluster
     connect_timeout: 60s
     type: LOGICAL_DNS
@@ -116,7 +117,8 @@ static_resources:
             address:
               socket_address:
                 address: app-service-account
-                port_value: 5002
+                # port_value: 5002
+                port_value: 80
   - name: deposit_cluster
     connect_timeout: 60s
     type: LOGICAL_DNS
@@ -131,7 +133,8 @@ static_resources:
             address:
               socket_address:
                 address: app-service-deposit
-                port_value: 5003
+                # port_value: 5003
+                port_value: 80
   - name: withdrawal_cluster
     connect_timeout: 60s
     type: LOGICAL_DNS
@@ -146,7 +149,8 @@ static_resources:
             address:
               socket_address:
                 address: app-service-withdrawal
-                port_value: 5004
+                # port_value: 5004
+                port_value: 80
   - name: movement_cluster
     connect_timeout: 60s
     type: LOGICAL_DNS
@@ -161,5 +165,6 @@ static_resources:
             address:
               socket_address:
                 address: app-service-movement
-                port_value: 5005
+                # port_value: 5005
+                port_value: 80
  
