@@ -39,6 +39,16 @@ static_resources:
                   prefix_rewrite: "/api/auth/getToken"
                   cluster: security_cluster
               - match:
+                  prefix: "/health/security"
+                route:
+                  prefix_rewrite: "/health"
+                  cluster: security_cluster
+              - match:
+                  prefix: "/metrics/security"
+                route:
+                  prefix_rewrite: "/metrics"
+                  cluster: security_cluster
+              - match:
                   prefix: "/account"
                 route:
                   prefix_rewrite: "/api/account/getAccounts"
