@@ -44,6 +44,16 @@ static_resources:
                   prefix_rewrite: "/api/account/getAccounts"
                   cluster: account_cluster
               - match:
+                  prefix: "/health/account"
+                route:
+                  prefix_rewrite: "/health"
+                  cluster: account_cluster
+              - match:
+                  prefix: "/metrics/account"
+                route:
+                  prefix_rewrite: "/metrics"
+                  cluster: account_cluster
+              - match:
                   prefix: "/deposit"
                 route:
                   prefix_rewrite: "/api/transaction/deposit"
